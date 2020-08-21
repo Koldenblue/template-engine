@@ -82,6 +82,7 @@ const continueQuestion = [
     }
 ]
 
+
 async function main() {
     try {
         // manager questions first
@@ -95,6 +96,16 @@ async function main() {
         while (true) {
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
             console.log(employeeAnswers);
+
+            if (employeeAnswers.role === "Intern") {
+                const internAnswer = await inquirer.prompt(internQuestions);
+                console.log(internAnswer);
+            }
+            else {
+                const engineerAnswer = await inquirer.prompt(engineerQuestions);
+                console.log(engineerAnswer);
+            }
+
             let willContinue = await askContinue();
             console.log(willContinue);
             if (!willContinue) {
@@ -119,8 +130,10 @@ async function askContinue() {
     }
 }
 
-// askContinue();
+
 main();
+// can also save employee objects in local storage
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
