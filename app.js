@@ -10,7 +10,117 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const managerQuestions = [
+    {
+        type: "input",
+        name: "name",
+        message: "What is the manager's name?"
+    },
+    {
+        type: "input",
+        name: "id",
+        message: "What is the manager's id?"
+    },
+    {
+        type: "input",
+        name: "email",
+        message: "What is the manager's email address?"
+    },
+    {
+        type: "number",
+        name: "office",
+        message: "What is the manager's office number?",
+    },
+]
 
+
+const employeeQuestions = [
+    {
+        type: "input",
+        name: "name",
+        message: "What is the employee's name?"
+    },
+    {
+        type: "input",
+        name: "id",
+        message: "What is the employee's id?"
+    },
+    {
+        type: "input",
+        name: "email",
+        message: "What is the employee's email address?"
+    },
+    {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: ["Engineer", "Intern"]
+    },
+]
+
+const internQuestions = [
+    {
+        type: "input",
+        name: "school",
+        message: "What school has the employee most recently attended?"
+    }
+]
+
+const engineerQuestions = [
+    {
+        type: "input",
+        name: "git",
+        message: "What is the employee's GitHub username?"
+    }
+]
+
+const continueQuestion = [
+    {
+        type: "confirm",
+        name: "continue",
+        message: "Would you like to continue entering employees?"
+    }
+]
+
+async function main() {
+    try {
+        // manager questions first
+        const managerAnswers = await inquirer.prompt(managerQuestions);
+        console.log(managerAnswers);
+        if (isNaN(managerAnswers.office)) {
+            throw new Error("office must be a number!");
+        }
+
+        // Employee questions next. keep asking about new employees until user elects not to continue
+        while (true) {
+            const employeeAnswers = await inquirer.prompt(employeeQuestions);
+            console.log(employeeAnswers);
+            let willContinue = await askContinue();
+            console.log(willContinue);
+            if (!willContinue) {
+                break;
+            }
+        }
+        console.log("done");
+    } catch (error) {
+        console.log("You have erred.")
+        console.log(error);
+    }
+}
+
+async function askContinue() {
+    try {
+        const continueAnswer = await inquirer.prompt(continueQuestion);
+        console.log(continueAnswer);
+        return continueAnswer.continue;
+    }
+    catch (error) {
+        console.log("oops, continue function failed.");
+    }
+}
+
+// askContinue();
+main();
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
