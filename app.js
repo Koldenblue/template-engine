@@ -84,10 +84,16 @@ const continueQuestion = [
 
 
 async function main() {
+    let employees = [];
     try {
         // manager questions first
         const managerAnswers = await inquirer.prompt(managerQuestions);
         console.log(managerAnswers);
+        // create a new Manager obj and push into the employees array, to be used in renderer function
+        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.role, managerAnswers.email, managerAnswers.id, managerAnswers.officeNumber);
+        employees.push(managerEmployee);
+        console.log(employees);
+
         if (isNaN(managerAnswers.officeNumber)) {
             throw new Error("office must be a number!");
         }
@@ -97,20 +103,29 @@ async function main() {
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
             console.log(employeeAnswers);
 
+            // ask different questions and create diff object, depending on role selected
             if (employeeAnswers.role === "Intern") {
                 const internAnswer = await inquirer.prompt(internQuestions);
                 console.log(internAnswer);
+                // create a new employee obj using the appropriate class
+                let internEmployee = new Intern(internAnswer.name, internAnswer.role, internAnswer.email, internAnswer.id, internAnswer.school);
+                employees.push(internEmployee);
             }
             else {
                 const engineerAnswer = await inquirer.prompt(engineerQuestions);
                 console.log(engineerAnswer);
+                let engiEmployee = new Engineer(engineerAnswer.name, engineerAnswer.role, engineerAnswer.email, engineerAnswer.id, engineerAnswer.github);
+                employees.push(engiEmployee);
             }
 
+            // ask if user would like to continue entering employee info
             let willContinue = await askContinue();
             console.log(willContinue);
             if (!willContinue) {
                 break;
             }
+
+            // TODO render all employees
         }
         console.log("done");
     } catch (error) {
@@ -132,7 +147,8 @@ async function askContinue() {
 
 
 main();
-// can also save employee objects in local storage
+// can also save employee objects in local storage - in browser
+// employees should each be constructed as objects by their constructors
 
 
 // Write code to use inquirer to gather information about the development team members,
