@@ -28,7 +28,7 @@ const managerQuestions = [
     },
     {
         type: "number",
-        name: "office",
+        name: "officeNumber",
         message: "What is the manager's office number?",
     },
 ]
@@ -69,7 +69,7 @@ const internQuestions = [
 const engineerQuestions = [
     {
         type: "input",
-        name: "git",
+        name: "github",
         message: "What is the employee's GitHub username?"
     }
 ]
@@ -88,7 +88,7 @@ async function main() {
         // manager questions first
         const managerAnswers = await inquirer.prompt(managerQuestions);
         console.log(managerAnswers);
-        if (isNaN(managerAnswers.office)) {
+        if (isNaN(managerAnswers.officeNumber)) {
             throw new Error("office must be a number!");
         }
 
@@ -133,6 +133,7 @@ async function askContinue() {
 
 main();
 // can also save employee objects in local storage
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
