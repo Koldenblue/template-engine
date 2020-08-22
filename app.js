@@ -1,6 +1,6 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
+const { Manager } = require("./lib/Manager");
+const { Engineer } = require("./lib/Engineer");
+const { Intern } = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -100,10 +100,10 @@ async function main() {
         employees.push(managerEmployee);
         console.log(employees);
 
-        if (isNaN(managerAnswers.officeNumber)) {
-            // could prob continue here or validate instead
-            throw new Error("office must be a number!");
-        }
+        // if (isNaN(managerAnswers.officeNumber)) {
+        //     // could prob continue here or validate instead
+        //     throw new Error("office must be a number!");
+        // }
 
         // Employee questions next. keep asking about new employees until user elects not to continue
         while (true) {
@@ -131,9 +131,10 @@ async function main() {
             if (!willContinue) {
                 break;
             }
-
-            // TODO render all employees
         }
+        console.log(employees);
+        console.log(render(employees));
+        // TODO render all employees
         console.log("done");
     } catch (error) {
         console.log("You have erred.")
