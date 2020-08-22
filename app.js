@@ -10,6 +10,12 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+// can put validation in
+// validate: function (value) {
+//     let regex = /@/
+//     let valid = regex.test(value)
+//     return valid || 'Please enter a valid email'
+// }
 const managerQuestions = [
     {
         type: "input",
@@ -95,6 +101,7 @@ async function main() {
         console.log(employees);
 
         if (isNaN(managerAnswers.officeNumber)) {
+            // could prob continue here or validate instead
             throw new Error("office must be a number!");
         }
 
