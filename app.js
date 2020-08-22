@@ -1,6 +1,6 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
+const { Manager } = require("./lib/Manager");
+const { Engineer } = require("./lib/Engineer");
+const { Intern } = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -96,14 +96,14 @@ async function main() {
         const managerAnswers = await inquirer.prompt(managerQuestions);
         console.log(managerAnswers);
         // create a new Manager obj and push into the employees array, to be used in renderer function
-        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.role, managerAnswers.email, managerAnswers.id, managerAnswers.officeNumber);
+        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.id, managerAnswers.email, managerAnswers.officeNumber, managerAnswers.role,);
         employees.push(managerEmployee);
         console.log(employees);
 
-        if (isNaN(managerAnswers.officeNumber)) {
-            // could prob continue here or validate instead
-            throw new Error("office must be a number!");
-        }
+        // if (isNaN(managerAnswers.officeNumber)) {
+        //     // could prob continue here or validate instead
+        //     throw new Error("office must be a number!");
+        // }
 
         // Employee questions next. keep asking about new employees until user elects not to continue
         while (true) {
@@ -115,13 +115,13 @@ async function main() {
                 const internAnswer = await inquirer.prompt(internQuestions);
                 console.log(internAnswer);
                 // create a new employee obj using the appropriate class
-                let internEmployee = new Intern(internAnswer.name, internAnswer.role, internAnswer.email, internAnswer.id, internAnswer.school);
+                let internEmployee = new Intern(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, internAnswer.school, internAnswer.role,);
                 employees.push(internEmployee);
             }
             else {
                 const engineerAnswer = await inquirer.prompt(engineerQuestions);
                 console.log(engineerAnswer);
-                let engiEmployee = new Engineer(engineerAnswer.name, engineerAnswer.role, engineerAnswer.email, engineerAnswer.id, engineerAnswer.github);
+                let engiEmployee = new Engineer(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, engineerAnswer.github, engineerAnswer.role,);
                 employees.push(engiEmployee);
             }
 
@@ -131,9 +131,18 @@ async function main() {
             if (!willContinue) {
                 break;
             }
-
-            // TODO render all employees
         }
+        console.log(employees);
+        let teamHtml = render(employees);
+
+        fs.writeFile("./output/team.html", teamHtml, function(error) {
+            if (error) {
+                throw new Error(error);
+            }
+        })
+        console.log(employees);
+        console.log(render(employees));
+        // TODO render all employees
         console.log("done");
     } catch (error) {
         console.log("You have erred.")
