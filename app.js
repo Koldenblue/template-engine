@@ -132,6 +132,13 @@ async function main() {
                 break;
             }
         }
+        let teamHtml = render(employees);
+
+        fs.writeFile("./output/team.html", teamHtml, function(error) {
+            if (error) {
+                throw new Error(error);
+            }
+        })
         console.log(employees);
         console.log(render(employees));
         // TODO render all employees
