@@ -1,0 +1,8 @@
+.jumbotron {
+    background-image: linear-gradient(to left bottom, #3879dc, #00a4fc, #00c5df, #00de90, #84eb12);
+}
+
+.page-title {
+    font-family: 'Philosopher', sans-serif;
+    font-size: 3em;
+}
