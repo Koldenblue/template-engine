@@ -31,13 +31,17 @@ const managerQuestions = [
         type: "input",
         name: "email",
         message: "What is the manager's email address?"
-    },
+    }
+];
+
+const officeQuestion = [
     {
         type: "number",
         name: "officeNumber",
-        message: "What is the manager's office number?",
-    },
+        message: "What is the manager's office number?"
+    }
 ];
+
 
 
 const employeeQuestions = [
@@ -88,22 +92,33 @@ const continueQuestion = [
     }
 ];
 
+/** Asks questions about the manager. Will only accept numbers for office number, else it repeats the question. */
+async function askManagerQuestions(employeesArr) {
+        // manager questions first
+        const managerAnswers = await inquirer.prompt(managerQuestions);
+        console.log(managerAnswers);
+        while (true) {
+            // use var, so that scope is outside of while loop
+            var officeAnswer = await inquirer.prompt(officeQuestion);
+            console.log(officeAnswer)
+            if (isNaN(officeAnswer.officeNumber)) {
+                console.log("A number must be entered for the office! Try again!");
+                continue;
+            }
+            break;
+        }
+        // create a new Manager obj and push into the employees array, to be used in renderer function
+        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.id, managerAnswers.email, officeAnswer.officeNumber);
+        employeesArr.push(managerEmployee);
+        return employeesArr;
+}
 
 async function main() {
     let employees = [];
     try {
-        // manager questions first
-        const managerAnswers = await inquirer.prompt(managerQuestions);
-        console.log(managerAnswers);
-        // create a new Manager obj and push into the employees array, to be used in renderer function
-        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.id, managerAnswers.email, managerAnswers.officeNumber);
-        employees.push(managerEmployee);
-        console.log(employees);
+        employees = await askManagerQuestions(employees);
 
-        // if (isNaN(managerAnswers.officeNumber)) {
-        //     // could prob continue here or validate instead
-        //     throw new Error("office must be a number!");
-        // }
+        console.log(employees);
 
         // Employee questions next. keep asking about new employees until user elects not to continue
         while (true) {
@@ -140,8 +155,6 @@ async function main() {
                 throw new Error(error);
             }
         })
-        console.log(employees);
-        // TODO render all employees
         console.log("done");
     } catch (error) {
         console.log("You have erred.")
