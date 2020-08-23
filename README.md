@@ -35,3 +35,6 @@ This project is licensed under the MIT License.
 
 <h3 id='questions'>Issues and Questions</h3>
 Issues and questions can be emailed to 'kmillergit' at the domain 'outlook.com'. The author's GitHub profile may be found at https://github.com/Koldenblue.
+
+<br>
+<div class='footer' style="font-size:0.8em">This readme was generated with the help of the readme template generator from https://github.com/Koldenblue/readme-generator.</div>
