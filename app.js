@@ -37,10 +37,16 @@ const managerQuestions = [
         name: "officeNumber",
         message: "What is the manager's office number?",
     },
-]
+];
 
 
 const employeeQuestions = [
+    {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: ["Engineer", "Intern"]
+    },
     {
         type: "input",
         name: "name",
@@ -55,14 +61,8 @@ const employeeQuestions = [
         type: "input",
         name: "email",
         message: "What is the employee's email address?"
-    },
-    {
-        type: "list",
-        name: "role",
-        message: "What is the employee's role?",
-        choices: ["Engineer", "Intern"]
-    },
-]
+    }
+];
 
 const internQuestions = [
     {
@@ -70,7 +70,7 @@ const internQuestions = [
         name: "school",
         message: "What school has the employee most recently attended?"
     }
-]
+];
 
 const engineerQuestions = [
     {
@@ -78,7 +78,7 @@ const engineerQuestions = [
         name: "github",
         message: "What is the employee's GitHub username?"
     }
-]
+];
 
 const continueQuestion = [
     {
@@ -86,7 +86,7 @@ const continueQuestion = [
         name: "continue",
         message: "Would you like to continue entering employees?"
     }
-]
+];
 
 
 async function main() {
@@ -96,7 +96,7 @@ async function main() {
         const managerAnswers = await inquirer.prompt(managerQuestions);
         console.log(managerAnswers);
         // create a new Manager obj and push into the employees array, to be used in renderer function
-        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.id, managerAnswers.email, managerAnswers.officeNumber, managerAnswers.role,);
+        let managerEmployee = new Manager(managerAnswers.name, managerAnswers.id, managerAnswers.email, managerAnswers.officeNumber);
         employees.push(managerEmployee);
         console.log(employees);
 
@@ -115,13 +115,13 @@ async function main() {
                 const internAnswer = await inquirer.prompt(internQuestions);
                 console.log(internAnswer);
                 // create a new employee obj using the appropriate class
-                let internEmployee = new Intern(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, internAnswer.school, internAnswer.role,);
+                let internEmployee = new Intern(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, internAnswer.school);
                 employees.push(internEmployee);
             }
             else {
                 const engineerAnswer = await inquirer.prompt(engineerQuestions);
                 console.log(engineerAnswer);
-                let engiEmployee = new Engineer(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, engineerAnswer.github, engineerAnswer.role,);
+                let engiEmployee = new Engineer(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, engineerAnswer.github);
                 employees.push(engiEmployee);
             }
 
@@ -141,7 +141,6 @@ async function main() {
             }
         })
         console.log(employees);
-        console.log(render(employees));
         // TODO render all employees
         console.log("done");
     } catch (error) {
