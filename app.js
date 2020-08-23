@@ -70,7 +70,15 @@ const employeeQuestions = [
     {
         type: "input",
         name: "email",
-        message: "What is the employee's email address?"
+        message: "What is the employee's email address?",
+        validate: async (input) => {
+            // email regex used to validate, taken from regular-expressions.info
+            if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(input)) {
+                return true;
+            }
+            console.log("\nA valid email address must be entered!")
+            return false;
+        }
     }
 ];
 
@@ -189,3 +197,4 @@ main();
 // add in note that only one manager is accepted
 // update css styles
 // add in N/A for when input is blank
+// could add filter by role buttons to main.html
