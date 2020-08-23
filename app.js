@@ -5,10 +5,13 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
-const OUTPUT_DIR = path.resolve(__dirname, "output");
+// joins output folder with pwd
+const OUTPUT_DIR = path.resolve("output");
+console.log(OUTPUT_DIR)
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { ENOENT } = require("constants");
 
 // can put validation in
 // validate: function (value) {
@@ -150,13 +153,19 @@ async function main() {
         console.log(employees);
         let teamHtml = render(employees);
 
-        fs.writeFile("./output/team.html", teamHtml, function(error) {
-            if (error) {
-                throw new Error(error);
+        fs.writeFile(outputPath, teamHtml, function(error) {
+            if (error && error.code === "ENOENT") {
+                // if the output folder does not exist, create it and try writing again
+                fs.mkdir(OUTPUT_DIR, err => {if (err) throw err});
+                fs.writeFile(outputPath, teamHtml, err => {if (err) throw err});
+            }
+            else if (error) {
+                throw error;
             }
         })
         console.log("done");
-    } catch (error) {
+    }
+    catch (error) {
         console.log("You have erred.")
         console.log(error);
     }
@@ -179,12 +188,14 @@ main();
 // employees should each be constructed as objects by their constructors
 
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+// TODO: use path __dirname for output
+// more validation for email, etc.
+// correct grid system so that columns are functional beyond team of 6
+// add in note that only one manager is accepted
+// update css styles
+// add in N/A for when input is blank
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
@@ -195,9 +206,3 @@ main();
 // HINT: each employee type (manager, engineer, or intern) has slightly different
 // information; write your code to ask different questions via inquirer depending on
 // employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
