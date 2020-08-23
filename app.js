@@ -7,18 +7,12 @@ const fs = require("fs");
 
 // joins output folder with pwd
 const OUTPUT_DIR = path.resolve("output");
-console.log(OUTPUT_DIR)
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 const { ENOENT } = require("constants");
 
-// can put validation in
-// validate: function (value) {
-//     let regex = /@/
-//     let valid = regex.test(value)
-//     return valid || 'Please enter a valid email'
-// }
+
 const managerQuestions = [
     {
         type: "input",
@@ -33,12 +27,21 @@ const managerQuestions = [
     {
         type: "input",
         name: "email",
-        message: "What is the manager's email address?"
+        message: "What is the manager's email address?",
+        validate: async (input) => {
+            // email regex used to validate, taken from regular-expressions.info
+            if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(input)) {
+                return true;
+            }
+            console.log("\nA valid email address must be entered!")
+            return false;
+        }
     }
 ];
 
 const officeQuestion = [
     {
+        // this question will be asked repeatedly by the askManagerQuestions function if NaN is returned
         type: "number",
         name: "officeNumber",
         message: "What is the manager's office number?"
@@ -98,12 +101,12 @@ const continueQuestion = [
 /** Asks questions about the manager. Will only accept numbers for office number, else it repeats the question. */
 async function askManagerQuestions(employeesArr) {
         // manager questions first
+        console.log("Enter one manager, then any number of engineers or interns.")
         const managerAnswers = await inquirer.prompt(managerQuestions);
-        console.log(managerAnswers);
+
         while (true) {
             // use var, so that scope is outside of while loop
             var officeAnswer = await inquirer.prompt(officeQuestion);
-            console.log(officeAnswer)
             if (isNaN(officeAnswer.officeNumber)) {
                 console.log("A number must be entered for the office! Try again!");
                 continue;
@@ -121,8 +124,6 @@ async function main() {
     try {
         employees = await askManagerQuestions(employees);
 
-        console.log(employees);
-
         // Employee questions next. keep asking about new employees until user elects not to continue
         while (true) {
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
@@ -131,26 +132,23 @@ async function main() {
             // ask different questions and create diff object, depending on role selected
             if (employeeAnswers.role === "Intern") {
                 const internAnswer = await inquirer.prompt(internQuestions);
-                console.log(internAnswer);
                 // create a new employee obj using the appropriate class
                 let internEmployee = new Intern(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, internAnswer.school);
                 employees.push(internEmployee);
             }
             else {
                 const engineerAnswer = await inquirer.prompt(engineerQuestions);
-                console.log(engineerAnswer);
                 let engiEmployee = new Engineer(employeeAnswers.name, employeeAnswers.id, employeeAnswers.email, engineerAnswer.github);
                 employees.push(engiEmployee);
             }
 
             // ask if user would like to continue entering employee info
             let willContinue = await askContinue();
-            console.log(willContinue);
             if (!willContinue) {
                 break;
             }
         }
-        console.log(employees);
+
         let teamHtml = render(employees);
 
         fs.writeFile(outputPath, teamHtml, function(error) {
@@ -174,7 +172,6 @@ async function main() {
 async function askContinue() {
     try {
         const continueAnswer = await inquirer.prompt(continueQuestion);
-        console.log(continueAnswer);
         return continueAnswer.continue;
     }
     catch (error) {
@@ -184,25 +181,11 @@ async function askContinue() {
 
 
 main();
-// can also save employee objects in local storage - in browser
-// employees should each be constructed as objects by their constructors
 
-
-// TODO: use path __dirname for output
+// TODO:
+// can also save employee objects, such as in local storage or in database
 // more validation for email, etc.
 // correct grid system so that columns are functional beyond team of 6
 // add in note that only one manager is accepted
 // update css styles
 // add in N/A for when input is blank
-
-
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
