@@ -132,10 +132,12 @@ async function main() {
     try {
         employees = await askManagerQuestions(employees);
 
+        let entryNum = 0;
         // Employee questions next. keep asking about new employees until user elects not to continue
         while (true) {
+            entryNum++;
+            console.log(`--- Now entering employee # ${entryNum} ---`)
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
-            console.log(employeeAnswers);
 
             // ask different questions and create diff object, depending on role selected
             if (employeeAnswers.role === "Intern") {
